@@ -1,87 +1,69 @@
-// Simple client-side validation using jQuery
-$(document).ready(function () {
+$(function () {
     $("#registrationForm").on("submit", function (e) {
         let isValid = true;
 
-        // Clear old errors
-        $(".error-message").text("");
-        $("input, select, textarea").removeClass("error");
-
-        // Full Name
-        const fullName = $("#fullName").val().trim();
-        if (fullName === "") {
-            showError("#fullName", "Full Name is required");
+        // Helper to show error
+        function setError(id, message) {
+            const wrapper = $(id).closest(".form-group");
+            wrapper.addClass("error");
+            wrapper.find("small.error").text(message);
             isValid = false;
         }
 
-        // Email
+        // Clear all previous errors
+        $(".form-group").removeClass("error");
+        $("small.error").text("");
+
+        const name = $("#fullName").val().trim();
         const email = $("#email").val().trim();
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (email === "") {
-            showError("#email", "Email is required");
-            isValid = false;
-        } else if (!emailPattern.test(email)) {
-            showError("#email", "Please enter a valid email");
-            isValid = false;
-        }
-
-        // Phone (simple 10-digit check)
         const phone = $("#phone").val().trim();
+        const course = $("#course").val().trim();
+        const department = $("#department").val().trim();
+        const semester = $("#semester").val().trim();
+        const reason = $("#reason").val().trim();
+
+        // Name
+        if (name.length < 3) {
+            setError("#fullName", "Please enter your full name (min 3 characters).");
+        }
+
+        // Email (simple regex)
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            setError("#email", "Enter a valid email address.");
+        }
+
+        // Phone (10 digits)
         const phonePattern = /^[0-9]{10}$/;
-        if (phone === "") {
-            showError("#phone", "Phone number is required");
-            isValid = false;
-        } else if (!phonePattern.test(phone)) {
-            showError("#phone", "Enter a valid 10-digit number");
-            isValid = false;
+        if (!phonePattern.test(phone)) {
+            setError("#phone", "Phone number must be 10 digits.");
         }
 
-        // Gender
-        if ($("input[name='gender']:checked").length === 0) {
-            $("input[name='gender']").addClass("error");
-            $("input[name='gender']").closest(".form-group")
-                .find(".error-message").text("Please select gender");
-            isValid = false;
-        }
-
-        // DOB
-        const dob = $("#dob").val();
-        if (dob === "") {
-            showError("#dob", "Date of Birth is required");
-            isValid = false;
-        }
-
-        // Course
-        const course = $("#course").val();
         if (course === "") {
-            showError("#course", "Please select a course");
-            isValid = false;
+            setError("#course", "Please select a course.");
         }
 
-        // Address
-        const address = $("#address").val().trim();
-        if (address === "") {
-            showError("#address", "Address is required");
-            isValid = false;
+        if (department === "") {
+            setError("#department", "Please select a department.");
         }
 
-        // Terms checkbox
-        if (!$("#agree").is(":checked")) {
-            $("#agree").addClass("error");
-            $("#agree").closest(".form-group")
-                .find(".error-message").text("You must confirm the information is correct");
-            isValid = false;
+        if (semester === "") {
+            setError("#semester", "Please select a semester.");
         }
 
-        // If form is invalid, prevent submission
+        if (reason.length < 10) {
+            setError("#reason", "Please provide at least 10 characters.");
+        }
+
         if (!isValid) {
-            e.preventDefault();
+            e.preventDefault(); // stop form submission if error
         }
     });
 
-    // Helper to show error for a particular input
-    function showError(selector, message) {
-        $(selector).addClass("error");
-        $(selector).closest(".form-group").find(".error-message").text(message);
-    }
+    // Remove error on change / typing
+    $("input, select, textarea").on("input change", function () {
+        const wrapper = $(this).closest(".form-group");
+        wrapper.removeClass("error");
+        wrapper.find("small.error").text("");
+    });
 });

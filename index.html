@@ -1,95 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Online Registration Form</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8" />
+    <title>Course Registration Form</title>
 
-    <!-- jQuery CDN -->
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <!-- Custom JS -->
-    <script src="assets/js/script.js" defer></script>
+    <!-- JS Validation -->
+    <script>
+        $(function () {
+            $("#registrationForm").on("submit", function (e) {
+                let valid = true;
+
+                function setError(id, msg) {
+                    const g = $(id).closest(".form-group");
+                    g.find("small").text(msg);
+                    valid = false;
+                }
+
+                $("small").text("");
+
+                const name = $("#fullName").val().trim();
+                const email = $("#email").val().trim();
+                const phone = $("#phone").val().trim();
+                const course = $("#course").val().trim();
+                const dept = $("#department").val().trim();
+                const sem = $("#semester").val().trim();
+                const address = $("#address").val().trim();
+
+                if (name.length < 3) setError("#fullName", "Enter full name");
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setError("#email", "Invalid email");
+                if (!/^[0-9]{10}$/.test(phone)) setError("#phone", "Enter 10 digit number");
+                if (!course) setError("#course", "Select a course");
+                if (!dept) setError("#department", "Select department");
+                if (!sem) setError("#semester", "Select semester");
+                if (address.length < 5) setError("#address", "Enter full address");
+
+                if (!valid) e.preventDefault();
+            });
+        });
+    </script>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Online Application / Registration Form</h1>
-        <p class="subtitle">Please fill in your details below.</p>
+    <div class="wrapper">
+        <form id="registrationForm" action="process.php" method="POST" class="form-card">
 
-        <form id="registrationForm" action="process.php" method="POST" novalidate>
-            <!-- Full Name -->
-            <div class="form-group">
-                <label for="fullName">Full Name <span class="required">*</span></label>
-                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
-                <small class="error-message"></small>
+            <div class="form-header">
+                <h1>Course Registration Form</h1>
+                <p>Fill in the details below</p>
             </div>
 
-            <!-- Email -->
             <div class="form-group">
-                <label for="email">Email <span class="required">*</span></label>
-                <input type="text" id="email" name="email" placeholder="example@email.com">
-                <small class="error-message"></small>
+                <label>Full Name <span>*</span></label>
+                <input type="text" id="fullName" name="fullName">
+                <small></small>
             </div>
 
-            <!-- Phone -->
             <div class="form-group">
-                <label for="phone">Phone Number <span class="required">*</span></label>
-                <input type="text" id="phone" name="phone" placeholder="10-digit number">
-                <small class="error-message"></small>
+                <label>Email <span>*</span></label>
+                <input type="text" id="email" name="email">
+                <small></small>
             </div>
 
-            <!-- Gender -->
             <div class="form-group">
-                <label>Gender <span class="required">*</span></label>
-                <div class="radio-group">
-                    <label><input type="radio" name="gender" value="Male"> Male</label>
-                    <label><input type="radio" name="gender" value="Female"> Female</label>
-                    <label><input type="radio" name="gender" value="Other"> Other</label>
-                </div>
-                <small class="error-message"></small>
+                <label>Phone Number <span>*</span></label>
+                <input type="text" id="phone" name="phone" maxlength="10">
+                <small></small>
             </div>
 
-            <!-- Date of Birth -->
             <div class="form-group">
-                <label for="dob">Date of Birth <span class="required">*</span></label>
-                <input type="date" id="dob" name="dob">
-                <small class="error-message"></small>
-            </div>
-
-            <!-- Course -->
-            <div class="form-group">
-                <label for="course">Course Applying For <span class="required">*</span></label>
+                <label>Select Course <span>*</span></label>
                 <select id="course" name="course">
-                    <option value="">-- Select Course --</option>
-                    <option value="BCA">BCA</option>
-                    <option value="BSc (CS)">BSc (CS)</option>
-                    <option value="B.Tech (CSE)">B.E (CSE)</option>
-                    <option value="MCA">MCA</option>
+                    <option value="">-- Select a Course --</option>
+                    <option>CSE</option>
+                    <option>ISE</option>
+                    <option>EC</option>
+                    <option>AERO</option>
                 </select>
-                <small class="error-message"></small>
+                <small></small>
             </div>
 
-            <!-- Address -->
             <div class="form-group">
-                <label for="address">Address <span class="required">*</span></label>
-                <textarea id="address" name="address" rows="3" placeholder="Enter your full address"></textarea>
-                <small class="error-message"></small>
+                <label>Department <span>*</span></label>
+                <select id="department" name="department">
+                    <option value="">-- Select Department --</option>
+                    <option>Computer Science</option>
+                    <option>Information Science</option>
+                    <option>Electronics</option>
+                    <option>Aeronautical</option>
+                </select>
+                <small></small>
             </div>
 
-            <!-- Terms -->
-            <div class="form-group checkbox-group">
-                <label>
-                    <input type="checkbox" id="agree" name="agree">
-                    I confirm that the above information is correct.
-                </label>
-                <small class="error-message"></small>
+            <div class="form-group">
+                <label>Semester <span>*</span></label>
+                <select id="semester" name="semester">
+                    <option value="">-- Select Semester --</option>
+                    <option>I</option>
+                    <option>II</option>
+                    <option>III</option>
+                    <option>IV</option>
+                    <option>V</option>
+                    <option>VI</option>
+                </select>
+                <small></small>
             </div>
 
-            <!-- Submit -->
-            <div class="form-actions">
-                <button type="submit" id="submitBtn">Submit Application</button>
-                <button type="reset" class="secondary-btn">Reset</button>
+            <div class="form-group">
+                <label>Address <span>*</span></label>
+                <textarea id="address" name="address" rows="3"></textarea>
+                <small></small>
             </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn primary">Register</button>
+                <button type="reset" class="btn secondary">Clear</button>
+            </div>
+
         </form>
     </div>
 </body>
